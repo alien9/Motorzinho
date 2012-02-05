@@ -1,0 +1,30 @@
+#!/usr/bin/python
+
+
+import usb
+
+busses = usb.busses()
+i = 0
+for bus in busses :
+    for dev in bus.devices :
+        if dev.idVendor == 1027 :
+            print "Found a likely Prologix device: "
+            print "\tBus = ", i
+            print "\tProduct = ", dev.idProduct, "FT232 USB-Serial (UART) IC"
+            print "\tVendor = ", dev.idVendor, "Future Technology Devices International, Ltd"
+            print "\tDevice Version:", dev.deviceVersion
+            prologix = dev.open()
+            try :
+                prologix.detachKernelDriver(0)
+            except :
+                print "Kernel driver apparently is not attached."
+            prologix.setConfiguration(1)
+            prologix.claimInterface(0)
+            print "Attempt to getDescriptor:"
+            print prologix.getDescriptor(2, 0, 64)
+            #print "Attempt to interruptRead:"
+            #print prologix.interruptWrite(129, "++ifc\n")
+            #print prologix.interruptRead(129, 64)       # endpoint, bytes to read
+            prologix.releaseInterface()
+            print "Prologix was claimed and released successfully."
+    i += 1
