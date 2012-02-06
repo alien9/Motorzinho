@@ -95,7 +95,13 @@ class Receptor extends Thread{
 		LCD.drawString("Connecticut.", 0, 3);
 		byte[] bytes = null;
 		while(!Button.ESCAPE.isPressed()){
-			int u=in.read();
+			int u = 0;
+			try {
+				u = in.read();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			LCD.drawInt(u, 3, 10);
 		}
 
